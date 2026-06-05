@@ -1,0 +1,26 @@
+{
+  "name": "limpa-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@hapi/hapi": "^21.3.2",
+    "@hapi/joi": "^17.1.1",
+    "firebase-admin": "^12.3.0",
+    "mongoose": "^8.4.0",
+    "stripe": "^14.25.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.6.0",
+    "vitest": "^1.6.0"
+  }
+}

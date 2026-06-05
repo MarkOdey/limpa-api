@@ -1,0 +1,52 @@
+services:
+  api:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    environment:
+      MONGO_URI: mongodb://mongo:27017/limpa
+      FIREBASE_AUTH_EMULATOR_HOST: firebase-emulator:9099
+      NODE_ENV: development
+    volumes:
+      - ./src:/app/src
+    command: node --watch src/server.js
+    depends_on:
+      mongo:
+        condition: service_healthy
+      firebase-emulator:
+        condition: service_started
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  firebase-emulator:
+    build:
+      context: .
+      dockerfile: Dockerfile.firebase
+    ports:
+      - "9099:9099"
+      - "4000:4000"
+    volumes:
+      - ./firebase.json:/app/firebase.json
+      - ./.firebaserc:/app/.firebaserc
+      - firebase-emulator-data:/app/data
+    command: >
+      firebase emulators:start --only auth
+      --export-on-exit /app/data
+      --import /app/data
+
+volumes:
+  mongo-data:
+  firebase-emulator-data:
