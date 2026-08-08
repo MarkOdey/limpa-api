@@ -1,5 +1,11 @@
 # Limpa demo deployment
 
+> **Scope:** this directory is the **local / dev** demo — it *builds* the images
+> on the machine it runs on. For **AWS / production** (pull-based: GitHub Actions
+> builds and pushes to Amazon ECR, and the EC2 host only pulls), see the
+> **`limpa-infra`** repo, which owns the prod compose, host provisioning, deploy
+> script, and IAM/OIDC setup.
+
 A single-command, self-contained demo of the Limpa platform you can open on a
 phone. **No Firebase, Stripe, or MongoDB Atlas accounts required** — auth and
 payments are mocked, MongoDB runs as a container, and demo data is seeded on
