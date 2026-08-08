@@ -1,11 +1,31 @@
 import admin from 'firebase-admin'
 import Boom from '@hapi/boom'
 import config from '../config.js'
+import { decodeMockToken } from '../mock/auth.js'
 
 export const firebaseAdminPlugin = {
   name: 'firebase-admin',
   register: (server) => {
-    const usingEmulator = !!process.env.FIREBASE_AUTH_EMULATOR_HOST
+    // Demo mode: no Firebase at all — trust a self-describing mock token.
+    if (config.authMode === 'mock') {
+      server.auth.scheme('firebase-jwt', () => ({
+        authenticate: (request, h) => {
+          const authHeader = request.headers.authorization
+          if (!authHeader?.startsWith('Bearer ')) {
+            throw Boom.unauthorized('Missing Bearer token')
+          }
+          const uid = decodeMockToken(authHeader.slice(7))
+          if (!uid) throw Boom.unauthorized('Invalid token')
+          return h.authenticated({ credentials: { uid, role: null } })
+        },
+      }))
+
+      server.auth.strategy('firebase', 'firebase-jwt')
+      server.auth.default('firebase')
+      return
+    }
+
+    const usingEmulator = config.authMode === 'emulator' || !!process.env.FIREBASE_AUTH_EMULATOR_HOST
 
     if (!admin.apps.length) {
       if (usingEmulator) {
