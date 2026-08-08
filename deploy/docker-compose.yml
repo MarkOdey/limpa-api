@@ -1,0 +1,55 @@
+# Self-contained Limpa demo stack: MongoDB + API (mocked Firebase/Stripe) + web.
+#
+# Assumes the two repos are cloned side by side, e.g.:
+#   <parent>/limpa-api   (this file lives in limpa-api/deploy/)
+#   <parent>/limpa-web
+#
+# Start it from this directory:
+#   docker compose up -d --build
+#
+# Then open http://<host>/ — everything is same-origin (nginx proxies /api).
+name: limpa-demo
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DEMO_MODE: "true"          # mock auth + mock Stripe + seed demo data
+      MONGO_URI: mongodb://mongo:27017/limpa
+      PORT: "3000"
+      HOST: "0.0.0.0"
+    expose:
+      - "3000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ../../limpa-web
+      dockerfile: Dockerfile
+      args:
+        API_BASE_URL: /api
+        AUTH_MODE: mock
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+
+volumes:
+  mongo-data:

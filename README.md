@@ -4,6 +4,23 @@ Backend API for the Limpa cleaning booking platform. Built with Node.js (ESM), H
 
 ---
 
+## 🚀 One-command demo (mocked Firebase + Stripe)
+
+Want a usable deployment you can open on your phone, with **no Firebase/Stripe/Atlas
+accounts**? Set `DEMO_MODE=true` and the API mocks Firebase auth, mocks Stripe, and
+seeds demo data on boot. A full Dockerized stack (web + API + MongoDB) and an AWS
+EC2 runbook live in [`deploy/`](./deploy/README.md).
+
+```bash
+# with limpa-api and limpa-web cloned side by side:
+cd deploy && docker compose up -d --build   # then open http://localhost/
+```
+
+Seeded logins (password ignored in demo mode): `demo.client@limpa.app`,
+`demo.cleaner@limpa.app`.
+
+---
+
 ## Prerequisites
 
 | Tool | Version | Notes |
