@@ -1,0 +1,63 @@
+name: build-and-deploy
+
+# Build the limpa-api image, push it to Amazon ECR, then tell the EC2 host to
+# pull and restart via SSM. See the limpa-infra repo for the compose stack,
+# deploy.sh, host provisioning, and the one-time AWS/IAM setup.
+#
+# Configure these repository variables (Settings → Secrets and variables →
+# Actions → Variables) — no secrets required, auth is via OIDC:
+#   AWS_REGION           e.g. us-east-1
+#   ECR_REGISTRY         <account-id>.dkr.ecr.<region>.amazonaws.com
+#   AWS_DEPLOY_ROLE_ARN  arn:aws:iam::<account-id>:role/limpa-github-deploy
+#   SSM_INSTANCE_TAG     value of the EC2 Name tag (defaults to limpa-demo)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write   # required to request the OIDC token
+  contents: read
+
+concurrency:
+  group: deploy-limpa-api
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      IMAGE: limpa-api
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Log in to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        run: |
+          docker build \
+            -t "$ECR_REGISTRY/$IMAGE:$GITHUB_SHA" \
+            -t "$ECR_REGISTRY/$IMAGE:latest" .
+          docker push "$ECR_REGISTRY/$IMAGE:$GITHUB_SHA"
+          docker push "$ECR_REGISTRY/$IMAGE:latest"
+        env:
+          ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+
+      - name: Trigger deploy on EC2 (SSM)
+        run: |
+          aws ssm send-command \
+            --document-name AWS-RunShellScript \
+            --targets "Key=tag:Name,Values=${SSM_TAG:-limpa-demo}" \
+            --comment "deploy limpa-api $GITHUB_SHA" \
+            --parameters commands='sudo /opt/limpa/deploy.sh' \
+            --output text
+        env:
+          SSM_TAG: ${{ vars.SSM_INSTANCE_TAG }}
