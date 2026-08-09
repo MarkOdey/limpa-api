@@ -1,10 +1,19 @@
 import mongoose from 'mongoose'
 
+const furnitureSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  kind: { type: String, required: true },        // catalog key, e.g. 'toilet'
+  icon: { type: String },                        // mdi icon name
+  position: { x: { type: Number, default: 0 }, y: { type: Number, default: 0 } },
+  size: { width: { type: Number, default: 40 }, height: { type: Number, default: 40 } },
+})
+
 const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
   position: { x: { type: Number, default: 0 }, y: { type: Number, default: 0 } },
   size: { width: { type: Number, default: 100 }, height: { type: Number, default: 100 } },
+  furniture: [furnitureSchema],
 })
 
 const levelSchema = new mongoose.Schema({

@@ -5,6 +5,7 @@
 // sample location with configured tasks, and one open service request so the
 // cleaner feed and client dashboards have something to show immediately.
 import { Task } from './models/Task.js'
+import { Furniture } from './models/Furniture.js'
 import { Client } from './models/Client.js'
 import { Cleaner } from './models/Cleaner.js'
 import { Location } from './models/Location.js'
@@ -36,6 +37,38 @@ async function seedTaskCatalog() {
   }
 }
 
+// Placeable furniture catalog. `applicableRoomTypes` drives the type-filtered
+// browse; the name search endpoint ignores it (search bypasses the filter).
+const FURNITURE_CATALOG = [
+  { kind: 'toilet', name: 'Toilet', icon: 'mdi-toilet', applicableRoomTypes: ['bathroom'], defaultSize: { width: 40, height: 48 } },
+  { kind: 'bathtub', name: 'Bathtub', icon: 'mdi-bathtub', applicableRoomTypes: ['bathroom'], defaultSize: { width: 120, height: 56 } },
+  { kind: 'shower', name: 'Shower', icon: 'mdi-shower', applicableRoomTypes: ['bathroom'], defaultSize: { width: 56, height: 56 } },
+  { kind: 'sink', name: 'Sink', icon: 'mdi-faucet', applicableRoomTypes: ['bathroom', 'kitchen'], defaultSize: { width: 48, height: 40 } },
+  { kind: 'fridge', name: 'Fridge', icon: 'mdi-fridge', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
+  { kind: 'stove', name: 'Stove', icon: 'mdi-stove', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
+  { kind: 'counter', name: 'Counter', icon: 'mdi-countertop', applicableRoomTypes: ['kitchen'], defaultSize: { width: 120, height: 40 } },
+  { kind: 'dishwasher', name: 'Dishwasher', icon: 'mdi-dishwasher', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
+  { kind: 'bed', name: 'Bed', icon: 'mdi-bed', applicableRoomTypes: ['bedroom'], defaultSize: { width: 120, height: 96 } },
+  { kind: 'wardrobe', name: 'Wardrobe', icon: 'mdi-wardrobe', applicableRoomTypes: ['bedroom'], defaultSize: { width: 96, height: 40 } },
+  { kind: 'nightstand', name: 'Nightstand', icon: 'mdi-table-furniture', applicableRoomTypes: ['bedroom'], defaultSize: { width: 40, height: 40 } },
+  { kind: 'couch', name: 'Couch', icon: 'mdi-sofa', applicableRoomTypes: ['living'], defaultSize: { width: 120, height: 56 } },
+  { kind: 'tv-stand', name: 'TV Stand', icon: 'mdi-television', applicableRoomTypes: ['living'], defaultSize: { width: 96, height: 40 } },
+  { kind: 'coffee-table', name: 'Coffee Table', icon: 'mdi-table-furniture', applicableRoomTypes: ['living', 'office'], defaultSize: { width: 72, height: 48 } },
+  { kind: 'desk', name: 'Desk', icon: 'mdi-desk', applicableRoomTypes: ['office'], defaultSize: { width: 96, height: 48 } },
+  { kind: 'office-chair', name: 'Office Chair', icon: 'mdi-chair-rolling', applicableRoomTypes: ['office'], defaultSize: { width: 40, height: 40 } },
+  { kind: 'bookshelf', name: 'Bookshelf', icon: 'mdi-bookshelf', applicableRoomTypes: ['office', 'living', 'bedroom'], defaultSize: { width: 72, height: 32 } },
+]
+
+async function seedFurnitureCatalog() {
+  for (const f of FURNITURE_CATALOG) {
+    await Furniture.updateOne(
+      { kind: f.kind },
+      { $setOnInsert: { ...f, status: 'active' } },
+      { upsert: true },
+    )
+  }
+}
+
 async function upsertUser(Model, email, extra = {}) {
   const firebaseUid = mockUidFromEmail(email)
   let doc = await Model.findOne({ firebaseUid })
@@ -47,6 +80,7 @@ async function upsertUser(Model, email, extra = {}) {
 
 export async function seedDemo() {
   await seedTaskCatalog()
+  await seedFurnitureCatalog()
 
   const client = await upsertUser(Client, DEMO_CLIENT_EMAIL, {
     firstName: 'Demo',
@@ -82,10 +116,10 @@ export async function seedDemo() {
           {
             name: 'Main floor',
             rooms: [
-              { name: 'Living Room', type: 'living' },
-              { name: 'Kitchen', type: 'kitchen' },
-              { name: 'Bathroom', type: 'bathroom' },
-              { name: 'Bedroom', type: 'bedroom' },
+              { name: 'Living Room', type: 'living', position: { x: 24, y: 24 }, size: { width: 240, height: 168 } },
+              { name: 'Kitchen', type: 'kitchen', position: { x: 288, y: 24 }, size: { width: 168, height: 168 } },
+              { name: 'Bathroom', type: 'bathroom', position: { x: 24, y: 216 }, size: { width: 120, height: 120 } },
+              { name: 'Bedroom', type: 'bedroom', position: { x: 168, y: 216 }, size: { width: 216, height: 120 } },
             ],
           },
         ],

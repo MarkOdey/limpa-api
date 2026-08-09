@@ -2,6 +2,7 @@ import { registerAuthRoutes } from './auth.js'
 import { registerClientProfileRoutes } from './client/profile.js'
 import { registerClientLocationRoutes } from './client/locations.js'
 import { registerClientTaskRoutes } from './client/tasks.js'
+import { registerClientFurnitureRoutes } from './client/furniture.js'
 import { registerClientRequestRoutes } from './client/requests.js'
 import { registerClientProposalRoutes } from './client/proposals.js'
 import { registerClientSessionRoutes } from './client/sessions.js'
@@ -15,6 +16,7 @@ export function registerRoutes(server) {
   registerClientProfileRoutes(server)
   registerClientLocationRoutes(server)
   registerClientTaskRoutes(server)
+  registerClientFurnitureRoutes(server)
   registerClientRequestRoutes(server)
   registerClientProposalRoutes(server)
   registerClientSessionRoutes(server)
