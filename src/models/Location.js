@@ -8,12 +8,20 @@ const furnitureSchema = new mongoose.Schema({
   size: { width: { type: Number, default: 40 }, height: { type: Number, default: 40 } },
 })
 
+const openingSchema = new mongoose.Schema({
+  type: { type: String, enum: ['door', 'window', 'portal'], required: true },
+  side: { type: String, enum: ['top', 'right', 'bottom', 'left'], required: true },
+  offset: { type: Number, default: 0 },   // px along the wall from its start corner
+  length: { type: Number, default: 48 },  // px
+})
+
 const roomSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, required: true },
   position: { x: { type: Number, default: 0 }, y: { type: Number, default: 0 } },
   size: { width: { type: Number, default: 100 }, height: { type: Number, default: 100 } },
   furniture: [furnitureSchema],
+  openings: [openingSchema],
 })
 
 const levelSchema = new mongoose.Schema({
