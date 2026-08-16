@@ -29,6 +29,13 @@ const levelSchema = new mongoose.Schema({
   rooms: [roomSchema],
 })
 
+// Wall thicknesses in metres. Defaults follow common architectural / ISO
+// practice: ~0.30 m exterior (outer) walls, ~0.10 m interior (inner) partitions.
+const wallsSchema = new mongoose.Schema({
+  inner: { type: Number, default: 0.10 },
+  outer: { type: Number, default: 0.30 },
+}, { _id: false })
+
 const areaSchema = new mongoose.Schema({
   name: { type: String, required: true },
   type: { type: String, enum: ['garden', 'driveway', 'pool', 'patio', 'other'], required: true },
@@ -49,6 +56,7 @@ const locationSchema = new mongoose.Schema({
   },
   building: {
     levels: [levelSchema],
+    walls: { type: wallsSchema, default: () => ({}) },
   },
   land: {
     areas: [areaSchema],
