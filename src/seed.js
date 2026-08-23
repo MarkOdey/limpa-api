@@ -57,6 +57,7 @@ const FURNITURE_CATALOG = [
   { kind: 'desk', name: 'Desk', icon: 'mdi-desk', applicableRoomTypes: ['office'], defaultSize: { width: 96, height: 48 } },
   { kind: 'office-chair', name: 'Office Chair', icon: 'mdi-chair-rolling', applicableRoomTypes: ['office'], defaultSize: { width: 40, height: 40 } },
   { kind: 'bookshelf', name: 'Bookshelf', icon: 'mdi-bookshelf', applicableRoomTypes: ['office', 'living', 'bedroom'], defaultSize: { width: 72, height: 32 } },
+  { kind: 'rug', name: 'Rug / Carpet', icon: 'mdi-rug', applicableRoomTypes: ['living', 'bedroom', 'office'], defaultSize: { width: 160, height: 120 } },
 ]
 
 async function seedFurnitureCatalog() {
