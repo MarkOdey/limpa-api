@@ -6,6 +6,10 @@ const furnitureSchema = new mongoose.Schema({
   icon: { type: String },                        // mdi icon name
   position: { x: { type: Number, default: 0 }, y: { type: Number, default: 0 } },
   size: { width: { type: Number, default: 40 }, height: { type: Number, default: 40 } },
+  // Free-form per-instance parameters that drive type-specific rendering on the
+  // client (e.g. a couch's `seats`). The set of keys is defined by the client
+  // furniture registry for each `kind`; stored here so choices persist.
+  params: { type: mongoose.Schema.Types.Mixed, default: {} },
 })
 
 const openingSchema = new mongoose.Schema({
