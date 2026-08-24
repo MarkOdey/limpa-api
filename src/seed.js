@@ -47,6 +47,7 @@ const FURNITURE_CATALOG = [
   { kind: 'fridge', name: 'Fridge', icon: 'mdi-fridge', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
   { kind: 'stove', name: 'Stove', icon: 'mdi-stove', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
   { kind: 'counter', name: 'Counter', icon: 'mdi-countertop', applicableRoomTypes: ['kitchen'], defaultSize: { width: 120, height: 40 } },
+  { kind: 'kitchen-table', name: 'Kitchen Table', icon: 'mdi-table-furniture', applicableRoomTypes: ['kitchen', 'living'], defaultSize: { width: 96, height: 96 } },
   { kind: 'dishwasher', name: 'Dishwasher', icon: 'mdi-dishwasher', applicableRoomTypes: ['kitchen'], defaultSize: { width: 56, height: 56 } },
   { kind: 'bed', name: 'Bed', icon: 'mdi-bed', applicableRoomTypes: ['bedroom'], defaultSize: { width: 120, height: 96 } },
   { kind: 'wardrobe', name: 'Wardrobe', icon: 'mdi-wardrobe', applicableRoomTypes: ['bedroom'], defaultSize: { width: 96, height: 40 } },
