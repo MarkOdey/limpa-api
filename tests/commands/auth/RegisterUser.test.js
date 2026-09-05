@@ -14,6 +14,16 @@ vi.mock('../../../src/models/Cleaner.js', () => ({
   },
 }))
 
+vi.mock('../../../src/models/User.js', () => ({
+  ROLES: ['client', 'worker', 'admin'],
+  User: {
+    findOneAndUpdate: vi.fn().mockImplementation((_q, update) => ({
+      firebaseUid: update.$setOnInsert.firebaseUid,
+      roles: update.$addToSet.roles ? [update.$addToSet.roles] : [],
+    })),
+  },
+}))
+
 const { RegisterUser } = await import('../../../src/commands/auth/RegisterUser.js')
 
 describe('RegisterUser', () => {
@@ -26,6 +36,7 @@ describe('RegisterUser', () => {
     expect(result._id).toBe('client-id-1')
     expect(result.email).toBe('client@test.com')
     expect(result.firstName).toBe('Jane')
+    expect(result.roles).toEqual(['client'])
   })
 
   it('creates and returns a new cleaner', async () => {
@@ -36,6 +47,7 @@ describe('RegisterUser', () => {
 
     expect(result._id).toBe('cleaner-id-1')
     expect(result.email).toBe('cleaner@test.com')
+    expect(result.roles).toEqual(['worker'])
   })
 
   it('throws 400 for an unknown role', async () => {

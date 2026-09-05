@@ -1,4 +1,5 @@
 import { RegisterUser } from '../commands/auth/RegisterUser.js'
+import { Whoami } from '../commands/auth/Whoami.js'
 import { AddFcmToken } from '../commands/auth/AddFcmToken.js'
 import { RemoveFcmToken } from '../commands/auth/RemoveFcmToken.js'
 
@@ -9,6 +10,11 @@ export function registerAuthRoutes(server) {
       path: '/api/auth/register',
       options: { auth: false },
       handler: (request) => new RegisterUser(request.payload).execute(),
+    },
+    {
+      method: 'GET',
+      path: '/api/auth/me',
+      handler: (request) => new Whoami({ uid: request.auth.credentials.uid }).execute(),
     },
     {
       method: 'POST',

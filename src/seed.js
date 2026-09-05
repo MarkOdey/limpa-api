@@ -8,6 +8,7 @@ import { Task } from './models/Task.js'
 import { Furniture } from './models/Furniture.js'
 import { Client } from './models/Client.js'
 import { Cleaner } from './models/Cleaner.js'
+import { User } from './models/User.js'
 import { Location } from './models/Location.js'
 import { ConfiguredTask } from './models/ConfiguredTask.js'
 import { ServiceRequest } from './models/ServiceRequest.js'
@@ -15,6 +16,7 @@ import { mockUidFromEmail } from './mock/auth.js'
 
 export const DEMO_CLIENT_EMAIL = 'demo.client@limpa.app'
 export const DEMO_CLEANER_EMAIL = 'demo.cleaner@limpa.app'
+export const DEMO_ADMIN_EMAIL = 'demo.admin@limpa.app'
 
 const TASK_CATALOG = [
   { name: 'Vacuum floors', defaultFrequency: 'weekly', applicableRoomTypes: ['bedroom', 'living', 'office'] },
@@ -80,6 +82,16 @@ async function upsertUser(Model, email, extra = {}) {
   return doc
 }
 
+// Upsert the unified User identity record with the given roles.
+async function upsertUserAccount(email, roles, extra = {}) {
+  const firebaseUid = mockUidFromEmail(email)
+  return User.findOneAndUpdate(
+    { firebaseUid },
+    { $setOnInsert: { firebaseUid, email, ...extra }, $addToSet: { roles: { $each: roles } } },
+    { new: true, upsert: true },
+  )
+}
+
 export async function seedDemo() {
   await seedTaskCatalog()
   await seedFurnitureCatalog()
@@ -100,6 +112,19 @@ export async function seedDemo() {
     completedSessionCount: 37,
     availability: { preferredDays: ['mon', 'wed', 'fri'], preferredHourStart: 9, preferredHourEnd: 17 },
   })
+
+  // A demo admin account for god-mode operations. It also has a client profile
+  // so it lands in the client app and can reach the admin page from the nav.
+  await upsertUser(Client, DEMO_ADMIN_EMAIL, {
+    firstName: 'Demo',
+    lastName: 'Admin',
+    phone: '+1 555 0300',
+  })
+
+  // Unified User identity records with roles.
+  await upsertUserAccount(DEMO_CLIENT_EMAIL, ['client'], { firstName: 'Demo', lastName: 'Client', phone: '+1 555 0100' })
+  await upsertUserAccount(DEMO_CLEANER_EMAIL, ['worker'], { firstName: 'Demo', lastName: 'Cleaner', phone: '+1 555 0200' })
+  await upsertUserAccount(DEMO_ADMIN_EMAIL, ['admin', 'client'], { firstName: 'Demo', lastName: 'Admin', phone: '+1 555 0300' })
 
   // One sample location for the demo client.
   let location = await Location.findOne({ clientId: client._id })
@@ -167,5 +192,5 @@ export async function seedDemo() {
     })
   }
 
-  return { clientEmail: DEMO_CLIENT_EMAIL, cleanerEmail: DEMO_CLEANER_EMAIL }
+  return { clientEmail: DEMO_CLIENT_EMAIL, cleanerEmail: DEMO_CLEANER_EMAIL, adminEmail: DEMO_ADMIN_EMAIL }
 }
