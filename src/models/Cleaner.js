@@ -17,7 +17,7 @@ const cleanerSchema = new mongoose.Schema({
   yearsOfExperience: { type: Number, default: 0 },
   badges: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Badge' }],
   reputationScore: { type: Number, default: 0 },
-  completedSessionCount: { type: Number, default: 0 },
+  completedJobCount: { type: Number, default: 0 },
   stripeAccountId: { type: String },
   availability: {
     preferredDays: [{ type: String }],

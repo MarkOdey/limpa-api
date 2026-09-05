@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-const sessionTodoSchema = new mongoose.Schema({
+const jobTodoSchema = new mongoose.Schema({
   // Kept so a completed job records which configured task was performed and when
   // — this is what drives "last time the task was done" for future requests.
   configuredTaskId: { type: mongoose.Schema.Types.ObjectId, ref: 'ConfiguredTask' },
@@ -10,7 +10,7 @@ const sessionTodoSchema = new mongoose.Schema({
   completedAt: { type: Date },
 })
 
-const sessionSchema = new mongoose.Schema({
+const jobSchema = new mongoose.Schema({
   serviceRequestId: { type: mongoose.Schema.Types.ObjectId, ref: 'ServiceRequest', required: true },
   proposalId: { type: mongoose.Schema.Types.ObjectId, ref: 'Proposal', required: true },
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
@@ -25,7 +25,7 @@ const sessionSchema = new mongoose.Schema({
   hourEnd: { type: Number, required: true },
   startedAt: { type: Date },
   completedAt: { type: Date },
-  todoList: [sessionTodoSchema],
+  todoList: [jobTodoSchema],
   billedAmount: { type: Number },
   platformFee: { type: Number },
   stripe: {
@@ -36,4 +36,4 @@ const sessionSchema = new mongoose.Schema({
   },
 }, { timestamps: true })
 
-export const Session = mongoose.model('Session', sessionSchema)
+export const Job = mongoose.model('Job', jobSchema)

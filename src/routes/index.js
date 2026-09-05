@@ -6,10 +6,10 @@ import { registerClientTaskRoutes } from './client/tasks.js'
 import { registerClientFurnitureRoutes } from './client/furniture.js'
 import { registerClientRequestRoutes } from './client/requests.js'
 import { registerClientProposalRoutes } from './client/proposals.js'
-import { registerClientSessionRoutes } from './client/sessions.js'
+import { registerClientJobRoutes } from './client/jobs.js'
 import { registerCleanerProfileRoutes } from './cleaner/profile.js'
 import { registerCleanerRequestRoutes } from './cleaner/requests.js'
-import { registerCleanerSessionRoutes } from './cleaner/sessions.js'
+import { registerCleanerJobRoutes } from './cleaner/jobs.js'
 import { registerCleanerDisputeRoutes } from './cleaner/disputes.js'
 
 export function registerRoutes(server) {
@@ -21,9 +21,9 @@ export function registerRoutes(server) {
   registerClientFurnitureRoutes(server)
   registerClientRequestRoutes(server)
   registerClientProposalRoutes(server)
-  registerClientSessionRoutes(server)
+  registerClientJobRoutes(server)
   registerCleanerProfileRoutes(server)
   registerCleanerRequestRoutes(server)
-  registerCleanerSessionRoutes(server)
+  registerCleanerJobRoutes(server)
   registerCleanerDisputeRoutes(server)
 }

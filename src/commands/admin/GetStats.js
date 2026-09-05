@@ -6,7 +6,7 @@ import { Location } from '../../models/Location.js'
 import { ConfiguredTask } from '../../models/ConfiguredTask.js'
 import { ServiceRequest } from '../../models/ServiceRequest.js'
 import { Proposal } from '../../models/Proposal.js'
-import { Session } from '../../models/Session.js'
+import { Job } from '../../models/Job.js'
 import { Dispute } from '../../models/Dispute.js'
 import { Task } from '../../models/Task.js'
 
@@ -19,7 +19,7 @@ export class GetStats {
   async execute() {
     await assertAdmin(this.uid)
 
-    const [users, clients, cleaners, locations, configuredTasks, requests, proposals, sessions, disputes, tasks] =
+    const [users, clients, cleaners, locations, configuredTasks, requests, proposals, jobs, disputes, tasks] =
       await Promise.all([
         User.countDocuments(),
         Client.countDocuments(),
@@ -28,11 +28,11 @@ export class GetStats {
         ConfiguredTask.countDocuments(),
         ServiceRequest.countDocuments(),
         Proposal.countDocuments(),
-        Session.countDocuments(),
+        Job.countDocuments(),
         Dispute.countDocuments(),
         Task.countDocuments(),
       ])
 
-    return { users, clients, cleaners, locations, configuredTasks, requests, proposals, sessions, disputes, tasks }
+    return { users, clients, cleaners, locations, configuredTasks, requests, proposals, jobs, disputes, tasks }
   }
 }

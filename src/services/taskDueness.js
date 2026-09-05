@@ -1,4 +1,4 @@
-import { Session } from '../models/Session.js'
+import { Job } from '../models/Job.js'
 
 const DAY = 24 * 60 * 60 * 1000
 
@@ -12,7 +12,7 @@ const FREQUENCY_INTERVAL = {
 }
 
 // For a client's configured tasks, find when each was last completed (across all
-// their sessions) and decide whether it is due now.
+// their jobs) and decide whether it is due now.
 //
 // Returns the configured tasks annotated with { lastDoneAt, due }. A task that
 // has never been done is always due.
@@ -20,7 +20,7 @@ export async function annotateDueness(clientId, configuredTasks, now = new Date(
   const ids = configuredTasks.map((t) => t._id)
   if (!ids.length) return []
 
-  const rows = await Session.aggregate([
+  const rows = await Job.aggregate([
     { $match: { clientId } },
     { $unwind: '$todoList' },
     { $match: { 'todoList.status': 'done', 'todoList.configuredTaskId': { $in: ids } } },

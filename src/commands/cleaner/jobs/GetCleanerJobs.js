@@ -1,13 +1,13 @@
-import { Session } from '../../../models/Session.js'
+import { Job } from '../../../models/Job.js'
 import { getCleaner } from '../../_helpers/getCleaner.js'
 
-export class GetCleanerSessions {
+export class GetCleanerJobs {
   constructor({ uid }) {
     this.uid = uid
   }
 
   async execute() {
     const cleaner = await getCleaner(this.uid)
-    return Session.find({ cleanerId: cleaner._id }).sort({ scheduledDate: -1 })
+    return Job.find({ cleanerId: cleaner._id }).sort({ scheduledDate: -1 })
   }
 }

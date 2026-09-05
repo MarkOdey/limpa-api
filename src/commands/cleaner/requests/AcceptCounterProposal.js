@@ -7,7 +7,7 @@ export class AcceptCounterProposal {
   }
 
   async execute() {
-    // TODO: cleaner accepts client counter-proposal, create session
+    // TODO: cleaner accepts client counter-proposal, create job
     throw Boom.notImplemented()
   }
 }

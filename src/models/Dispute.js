@@ -9,7 +9,7 @@ const disputedTodoSchema = new mongoose.Schema({
 }, { _id: false })
 
 const disputeSchema = new mongoose.Schema({
-  sessionId: { type: mongoose.Schema.Types.ObjectId, ref: 'Session', required: true },
+  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
   clientId: { type: mongoose.Schema.Types.ObjectId, ref: 'Client', required: true },
   cleanerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Cleaner', required: true },
   status: {

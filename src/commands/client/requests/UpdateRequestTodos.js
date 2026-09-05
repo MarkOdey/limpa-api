@@ -9,7 +9,7 @@ export class UpdateRequestTodos {
   }
 
   async execute() {
-    // TODO: add/remove todo items; enforce session not yet started
+    // TODO: add/remove todo items; enforce job not yet started
     throw Boom.notImplemented()
   }
 }

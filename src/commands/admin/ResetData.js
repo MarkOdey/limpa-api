@@ -10,7 +10,7 @@ import { Location } from '../../models/Location.js'
 import { ConfiguredTask } from '../../models/ConfiguredTask.js'
 import { ServiceRequest } from '../../models/ServiceRequest.js'
 import { Proposal } from '../../models/Proposal.js'
-import { Session } from '../../models/Session.js'
+import { Job } from '../../models/Job.js'
 import { Dispute } from '../../models/Dispute.js'
 import { Task } from '../../models/Task.js'
 import { Furniture } from '../../models/Furniture.js'
@@ -18,7 +18,7 @@ import { Badge } from '../../models/Badge.js'
 
 const MODELS = [
   User, Client, Cleaner, Location, ConfiguredTask, ServiceRequest,
-  Proposal, Session, Dispute, Task, Furniture, Badge,
+  Proposal, Job, Dispute, Task, Furniture, Badge,
 ]
 
 // Delete every Firebase Auth user. Only runs against the local emulator — we

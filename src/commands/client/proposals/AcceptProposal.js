@@ -1,7 +1,7 @@
 import Boom from '@hapi/boom'
 import { Proposal } from '../../../models/Proposal.js'
 import { ServiceRequest } from '../../../models/ServiceRequest.js'
-import { Session } from '../../../models/Session.js'
+import { Job } from '../../../models/Job.js'
 import { getClientId } from '../../_helpers/getClientId.js'
 
 export class AcceptProposal {
@@ -25,7 +25,7 @@ export class AcceptProposal {
 
     await Proposal.updateOne({ _id: proposal._id }, { $set: { status: 'accepted' } })
 
-    const session = await Session.create({
+    const job = await Job.create({
       serviceRequestId: proposal.serviceRequestId,
       proposalId: proposal._id,
       clientId,
@@ -35,7 +35,7 @@ export class AcceptProposal {
       hourEnd: proposal.proposedHourEnd,
       // The job inherits the request's tasks. Carry the configuredTaskId so that
       // completing a todo records when that configured task was last done; start
-      // each todo unmarked (the worker marks status during the session).
+      // each todo unmarked (the worker marks status during the job).
       todoList: serviceReq.todoList.map((t) => ({
         configuredTaskId: t.configuredTaskId,
         name: t.name,
@@ -43,6 +43,6 @@ export class AcceptProposal {
       })),
     })
 
-    return { sessionId: session._id, status: 'scheduled', scheduledDate: session.scheduledDate, estimatedPrice: proposal.estimatedPrice }
+    return { jobId: job._id, status: 'scheduled', scheduledDate: job.scheduledDate, estimatedPrice: proposal.estimatedPrice }
   }
 }

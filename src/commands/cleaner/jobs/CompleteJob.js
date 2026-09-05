@@ -1,25 +1,25 @@
 import Boom from '@hapi/boom'
-import { Session } from '../../../models/Session.js'
+import { Job } from '../../../models/Job.js'
 import { getCleaner } from '../../_helpers/getCleaner.js'
 import { calcBilling } from '../../../services/stripe.js'
 
-export class CompleteSession {
-  constructor({ uid, sessionId }) {
+export class CompleteJob {
+  constructor({ uid, jobId }) {
     this.uid = uid
-    this.sessionId = sessionId
+    this.jobId = jobId
   }
 
   async execute() {
     const cleaner = await getCleaner(this.uid)
-    const session = await Session.findOne({ _id: this.sessionId, cleanerId: cleaner._id, status: 'in_progress' })
-    if (!session) throw Boom.notFound('Session not found or not in progress')
+    const job = await Job.findOne({ _id: this.jobId, cleanerId: cleaner._id, status: 'in_progress' })
+    if (!job) throw Boom.notFound('Job not found or not in progress')
 
-    const doneTodos = session.todoList.filter((t) => t.status === 'done')
+    const doneTodos = job.todoList.filter((t) => t.status === 'done')
     // TODO: fetch per-task prices from proposal/task modifiers for accurate billing
     const { billedAmount, platformFee } = calcBilling(doneTodos.map(() => ({ price: 0 })))
 
-    const updated = await Session.findByIdAndUpdate(
-      session._id,
+    const updated = await Job.findByIdAndUpdate(
+      job._id,
       { $set: { status: 'completed', completedAt: new Date(), billedAmount, platformFee } },
       { new: true }
     )

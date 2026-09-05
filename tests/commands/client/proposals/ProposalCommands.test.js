@@ -36,10 +36,10 @@ vi.mock('../../../../src/models/ServiceRequest.js', () => ({
   },
 }))
 
-vi.mock('../../../../src/models/Session.js', () => ({
-  Session: {
+vi.mock('../../../../src/models/Job.js', () => ({
+  Job: {
     create: vi.fn().mockResolvedValue({
-      _id: 'session-id-1', scheduledDate: new Date('2024-06-01'),
+      _id: 'job-id-1', scheduledDate: new Date('2024-06-01'),
     }),
   },
 }))
@@ -73,12 +73,12 @@ describe('GetProposal', () => {
 })
 
 describe('AcceptProposal', () => {
-  it('accepts proposal, marks request accepted, creates session', async () => {
+  it('accepts proposal, marks request accepted, creates job', async () => {
     const { Proposal } = await import('../../../../src/models/Proposal.js')
     vi.mocked(Proposal.findOne).mockResolvedValueOnce(mockProposal)
 
     const result = await new AcceptProposal({ uid: 'test-uid', requestId: 'req-id-1', proposalId: 'prop-id-1' }).execute()
-    expect(result.sessionId).toBe('session-id-1')
+    expect(result.jobId).toBe('job-id-1')
     expect(result.status).toBe('scheduled')
   })
 })

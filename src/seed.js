@@ -109,7 +109,7 @@ export async function seedDemo() {
     bio: 'Friendly demo cleaner with a spotless record.',
     yearsOfExperience: 4,
     reputationScore: 4.8,
-    completedSessionCount: 37,
+    completedJobCount: 37,
     availability: { preferredDays: ['mon', 'wed', 'fri'], preferredHourStart: 9, preferredHourEnd: 17 },
   })
 

@@ -71,7 +71,7 @@ describe('sendNotification', () => {
       body: 'B',
       type: 'SESSION_STARTED',
       referenceId: 'sess-1',
-      referenceCollection: 'sessions',
+      referenceCollection: 'jobs',
     })
 
     expect(result).toEqual({ successCount: 2, failureCount: 0 })
