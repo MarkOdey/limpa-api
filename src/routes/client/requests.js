@@ -14,7 +14,7 @@ export function registerClientRequestRoutes(server) {
     {
       method: 'GET',
       path: '/api/client/requests',
-      handler: (request) => new GetServiceRequests({ uid: request.auth.credentials.uid }).execute(),
+      handler: (request) => new GetServiceRequests({ uid: request.auth.credentials.uid, locationId: request.query.locationId }).execute(),
     },
     {
       method: 'GET',
