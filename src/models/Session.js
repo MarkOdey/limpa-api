@@ -1,6 +1,9 @@
 import mongoose from 'mongoose'
 
 const sessionTodoSchema = new mongoose.Schema({
+  // Kept so a completed job records which configured task was performed and when
+  // — this is what drives "last time the task was done" for future requests.
+  configuredTaskId: { type: mongoose.Schema.Types.ObjectId, ref: 'ConfiguredTask' },
   name: { type: String, required: true },
   roomOrAreaName: { type: String },
   status: { type: String, enum: ['done', 'not_needed', 'incomplete'] },

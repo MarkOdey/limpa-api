@@ -1,5 +1,6 @@
 import { SearchTasks } from '../../commands/client/tasks/SearchTasks.js'
 import { GetLocationTasks } from '../../commands/client/tasks/GetLocationTasks.js'
+import { GetDueTasks } from '../../commands/client/tasks/GetDueTasks.js'
 import { CreateLocationTask } from '../../commands/client/tasks/CreateLocationTask.js'
 import { UpdateLocationTask } from '../../commands/client/tasks/UpdateLocationTask.js'
 import { DeleteLocationTask } from '../../commands/client/tasks/DeleteLocationTask.js'
@@ -16,6 +17,11 @@ export function registerClientTaskRoutes(server) {
       method: 'GET',
       path: '/api/client/locations/{locationId}/tasks',
       handler: (request) => new GetLocationTasks({ uid: request.auth.credentials.uid, locationId: request.params.locationId }).execute(),
+    },
+    {
+      method: 'GET',
+      path: '/api/client/locations/{locationId}/tasks/due',
+      handler: (request) => new GetDueTasks({ uid: request.auth.credentials.uid, locationId: request.params.locationId }).execute(),
     },
     {
       method: 'POST',

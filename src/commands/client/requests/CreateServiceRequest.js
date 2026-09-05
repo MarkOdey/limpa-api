@@ -3,7 +3,7 @@ import { ConfiguredTask } from '../../../models/ConfiguredTask.js'
 import { getClientId } from '../../_helpers/getClientId.js'
 
 export class CreateServiceRequest {
-  constructor({ uid, locationId, preferredDays, preferredHourStart, preferredHourEnd, isRecurring, recurringFrequency }) {
+  constructor({ uid, locationId, preferredDays, preferredHourStart, preferredHourEnd, isRecurring, recurringFrequency, taskIds }) {
     this.uid = uid
     this.locationId = locationId
     this.preferredDays = preferredDays
@@ -11,11 +11,16 @@ export class CreateServiceRequest {
     this.preferredHourEnd = preferredHourEnd
     this.isRecurring = isRecurring
     this.recurringFrequency = recurringFrequency
+    // Selected configured-task ids to include as todos. When omitted, all active
+    // configured tasks are included (backward-compatible default).
+    this.taskIds = taskIds
   }
 
   async execute() {
     const clientId = await getClientId(this.uid)
-    const configuredTasks = await ConfiguredTask.find({ clientId, locationId: this.locationId, status: 'active' })
+    const filter = { clientId, locationId: this.locationId, status: 'active' }
+    if (Array.isArray(this.taskIds)) filter._id = { $in: this.taskIds }
+    const configuredTasks = await ConfiguredTask.find(filter)
     const todoList = configuredTasks.map((t) => ({
       configuredTaskId: t._id,
       name: t.name,

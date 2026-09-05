@@ -33,7 +33,14 @@ export class AcceptProposal {
       scheduledDate: proposal.proposedDate,
       hourStart: proposal.proposedHourStart,
       hourEnd: proposal.proposedHourEnd,
-      todoList: serviceReq.todoList,
+      // The job inherits the request's tasks. Carry the configuredTaskId so that
+      // completing a todo records when that configured task was last done; start
+      // each todo unmarked (the worker marks status during the session).
+      todoList: serviceReq.todoList.map((t) => ({
+        configuredTaskId: t.configuredTaskId,
+        name: t.name,
+        roomOrAreaName: t.roomOrAreaName,
+      })),
     })
 
     return { sessionId: session._id, status: 'scheduled', scheduledDate: session.scheduledDate, estimatedPrice: proposal.estimatedPrice }
