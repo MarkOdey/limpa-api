@@ -1,6 +1,7 @@
 import { ListUsers } from '../commands/admin/ListUsers.js'
 import { UpdateUserRoles } from '../commands/admin/UpdateUserRoles.js'
 import { GetStats } from '../commands/admin/GetStats.js'
+import { ResetData } from '../commands/admin/ResetData.js'
 
 // God-mode operations. Every handler asserts the caller has the admin role.
 export function registerAdminRoutes(server) {
@@ -23,6 +24,11 @@ export function registerAdminRoutes(server) {
         userId: request.params.id,
         roles: request.payload.roles,
       }).execute(),
+    },
+    {
+      method: 'POST',
+      path: '/api/admin/reset',
+      handler: (request) => new ResetData({ uid: request.auth.credentials.uid }).execute(),
     },
   ])
 }

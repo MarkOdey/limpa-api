@@ -121,8 +121,9 @@ export async function seedDemo() {
     phone: '+1 555 0300',
   })
 
-  // Unified User identity records with roles.
-  await upsertUserAccount(DEMO_CLIENT_EMAIL, ['client'], { firstName: 'Demo', lastName: 'Client', phone: '+1 555 0100' })
+  // Unified User identity records with roles. The demo client doubles as an
+  // admin so the primary test account can reach god-mode operations.
+  await upsertUserAccount(DEMO_CLIENT_EMAIL, ['client', 'admin'], { firstName: 'Demo', lastName: 'Client', phone: '+1 555 0100' })
   await upsertUserAccount(DEMO_CLEANER_EMAIL, ['worker'], { firstName: 'Demo', lastName: 'Cleaner', phone: '+1 555 0200' })
   await upsertUserAccount(DEMO_ADMIN_EMAIL, ['admin', 'client'], { firstName: 'Demo', lastName: 'Admin', phone: '+1 555 0300' })
 
